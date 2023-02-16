@@ -18,5 +18,10 @@ const games: Game[] = [
 </script>
 
 <template>
-  <GameCard v-for="game in games" :key="game.issueId" :game="game" />
+  <GameCard
+    v-for="game in games"
+    :key="game.issueId"
+    :game="game"
+    class="mb-4"
+  />
 </template>
