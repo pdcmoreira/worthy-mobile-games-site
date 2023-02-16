@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { reactive } from "vue";
 import axios from "axios";
+import LayoutHeader from "./components/LayoutHeader.vue";
 
 const state = reactive({
   token: null,
@@ -46,12 +47,13 @@ const searchGames = async () => {
 </script>
 
 <template>
-  <header>Worthy Mobile Games</header>
-  <br />
-  <main>
+  <LayoutHeader />
+
+  <main class="container mx-auto">
+    <pre>{{ state.games }}</pre>
     <button @click="searchGames">try</button>
     <br />
-    <pre>{{ state.games }}</pre>
-    <!-- <RouterView /> -->
+
+    <RouterView />
   </main>
 </template>
