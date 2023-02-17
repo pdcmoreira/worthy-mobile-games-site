@@ -1,20 +1,26 @@
 import { createRouter, createWebHistory } from "vue-router";
 import GameList from "@/views/GameList.vue";
-import GameListAndroid from "@/views/GameListAndroid.vue";
 
 export default createRouter({
   history: createWebHistory(),
+
   routes: [
     {
-      path: "/",
+      path: "/:platform?",
+
       component: GameList,
-      children: [
-        {
-          path: "/",
-          alias: "android",
-          component: GameListAndroid,
-        },
-      ],
+
+      beforeEnter: (to, from, next) => {
+        if (!to.params.platform) {
+          next("/android");
+
+          return;
+        }
+
+        next();
+      },
+
+      props: (route) => ({ platform: route.params.platform }),
     },
   ],
 });

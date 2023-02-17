@@ -1,5 +1,5 @@
 <template>
-  <header class="container mx-auto my-4">
+  <header class="container mx-auto my-4 p-4">
     <p class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
       Worthy Mobile Games
     </p>

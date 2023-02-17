@@ -49,7 +49,7 @@ const searchGames = async () => {
 <template>
   <LayoutHeader />
 
-  <main class="container mx-auto">
+  <main class="container mx-auto p-4">
     <pre>{{ state.games }}</pre>
     <button @click="searchGames">try</button>
     <br />
