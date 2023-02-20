@@ -3,6 +3,7 @@ import AndroidIcon from "@/icons/AndroidIcon.vue";
 import IosIcon from "@/icons/IosIcon.vue";
 import type { Game } from "@/types";
 import GameCard from "@/components/GameCard.vue";
+import InputSelect from "@/components/InputSelect.vue";
 
 defineProps({
   platform: {
@@ -53,6 +54,8 @@ const games: Game[] = [
         {{ name }}
       </RouterLink>
     </div>
+
+    <InputSelect />
 
     <GameCard
       v-for="game in games"
