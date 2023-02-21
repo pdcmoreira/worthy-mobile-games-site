@@ -2,44 +2,73 @@
 import type { Game } from "@/types";
 import { computed, type PropType } from "vue";
 import LikeIcon from "@/icons/LikeIcon.vue";
+import GameIcon from "@/icons/GameIcon.vue";
 
 const props = defineProps({
   game: { type: Object as PropType<Game>, required: true },
 });
 
-const likes = computed(() => 351);
+const getTagType = (tag: string) => {
+  const match = tag.match(/^(.+): (.+)$/);
+
+  if (!match) {
+    return null;
+  }
+
+  return {
+    type: match[1],
+    value: match[2],
+  };
+};
+
+// (pseudo-thinking)
+// TODO: think this through: data structure and typing
+const resolvedTags = computed(() => {
+  const result = {
+    genres: [],
+    payments: [],
+    features: [],
+  };
+
+  props.game.tags.forEach((tag) => {
+    const { type, value } = getTagType(tag);
+
+    result[type].push(value);
+  });
+
+  return result;
+});
 </script>
 
 <template>
-  <div class="relative block rounded-xl border border-gray-100 p-8 shadow-md">
-    <span
-      class="absolute right-4 top-4 flex rounded-full bg-emerald-100 px-3 py-1.5 text-xs font-medium text-emerald-800"
+  <div class="relative flex h-32 justify-center rounded-sm border shadow-sm">
+    <!-- Maybe "detach" it from the card (no background + margin right) -->
+    <div
+      class="flex w-32 min-w-fit flex-shrink-0 items-center justify-center bg-gray-100"
     >
-      <LikeIcon class="mr-1" /> {{ likes }}
-    </span>
+      <GameIcon class="h-14 w-14 text-gray-400" />
+    </div>
 
-    <div class="mt-4 text-gray-500 sm:pr-8">
-      <svg
-        class="h-8 w-8 sm:h-10 sm:w-10"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
+    <div class="flex flex-grow flex-col overflow-hidden p-4 text-gray-500">
+      <h3
+        class="w-full overflow-hidden overflow-ellipsis whitespace-nowrap text-lg font-bold"
       >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
-        ></path>
-      </svg>
+        {{ game.name }} (1 line)
+      </h3>
 
-      <h3 class="mt-4 text-xl font-bold text-gray-900">Science of Chemistry</h3>
-
-      <p class="mt-2 hidden text-sm sm:block">
-        You can manage phone, email and chat conversations all from a single
-        mailbox.
+      <p
+        class="mt-2 overflow-hidden overflow-ellipsis whitespace-nowrap text-sm text-gray-400"
+      >
+        (2 lines)
       </p>
+    </div>
+
+    <div class="self-start py-4 pr-4">
+      <span
+        class="flex rounded-full bg-emerald-100 px-3 py-1.5 text-xs font-medium text-emerald-800"
+      >
+        <LikeIcon class="mr-1" /> {{ game.likes }}
+      </span>
     </div>
   </div>
 </template>

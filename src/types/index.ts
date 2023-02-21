@@ -1,5 +1,11 @@
+//TODO: interface or type?
+
 export interface Game {
   issueId: number;
+
   name: string;
-  totalReactions: number;
+
+  likes: number;
+
+  tags: Array<string>;
 }

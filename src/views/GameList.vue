@@ -29,12 +29,14 @@ const games: Game[] = [
   {
     issueId: 1,
     name: "AAA",
-    totalReactions: 0,
+    likes: 0,
+    tags: [],
   },
   {
     issueId: 2,
     name: "BBB",
-    totalReactions: 3,
+    likes: 341,
+    tags: [],
   },
 ];
 </script>
@@ -55,7 +57,7 @@ const games: Game[] = [
       </RouterLink>
     </div>
 
-    <InputSelect />
+    <InputSelect class="mb-4" />
 
     <GameCard
       v-for="game in games"
