@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { reactive } from "vue";
+import { ref } from "vue";
 import axios from "axios";
 import LayoutHeader from "./components/LayoutHeader.vue";
-
-const state = reactive({
-  token: null,
-  games: [],
-});
+import type { Game } from "@/types";
 
 const atlasApp = import.meta.env.VITE_ATLAS_APP;
+
+const token = ref<string>("");
+
+const games = ref<Game[]>([]);
 
 const fetchToken = async () => {
   const response = await axios.post(
@@ -19,7 +19,7 @@ const fetchToken = async () => {
 };
 
 const getToken = async () => {
-  return state.token || fetchToken();
+  return token.value || fetchToken();
 };
 
 const searchGames = async () => {
@@ -42,7 +42,7 @@ const searchGames = async () => {
     }
   );
 
-  state.games = response.data.documents;
+  games.value = response.data.documents;
 };
 </script>
 
@@ -50,7 +50,7 @@ const searchGames = async () => {
   <LayoutHeader />
 
   <main class="container mx-auto p-4">
-    <pre>{{ state.games }}</pre>
+    <pre>{{ games }}</pre>
     <button @click="searchGames">try</button>
     <br />
 

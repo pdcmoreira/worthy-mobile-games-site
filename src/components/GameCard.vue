@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import type { Game } from "@/types";
+import { type Game, GameTagType } from "@/types";
 import { computed, type PropType } from "vue";
+import GameTag from "./GameTag.vue";
 import LikeIcon from "@/icons/LikeIcon.vue";
 import GameIcon from "@/icons/GameIcon.vue";
 
@@ -8,45 +9,43 @@ const props = defineProps({
   game: { type: Object as PropType<Game>, required: true },
 });
 
-const getTagType = (tag: string) => {
-  const match = tag.match(/^(.+): (.+)$/);
+// TODO: do this when mapping API results to Game
+// const resolveTag = (tag: string): [string, string] | null => {
+//   const match = tag.match(/^(.+): (.+)$/);
 
-  if (!match) {
-    return null;
-  }
+//   if (!match) {
+//     return null;
+//   }
 
-  return {
-    type: match[1],
-    value: match[2],
-  };
-};
+//   return [match[1], match[2]];
+// };
 
-// (pseudo-thinking)
-// TODO: think this through: data structure and typing
-const resolvedTags = computed(() => {
-  const result = {
-    genres: [],
-    payments: [],
-    features: [],
-  };
+const getTagsOfType = (type: GameTagType) =>
+  props.game.tags.filter((tag) => tag.type === type);
 
-  props.game.tags.forEach((tag) => {
-    const { type, value } = getTagType(tag);
+const genreTags = computed(() => getTagsOfType(GameTagType.Genre));
 
-    result[type].push(value);
-  });
+const paymentTags = computed(() => getTagsOfType(GameTagType.Payment));
 
-  return result;
-});
+const featureTags = computed(() => getTagsOfType(GameTagType.Feature));
 </script>
 
 <template>
   <div class="relative flex h-32 justify-center rounded-sm border shadow-sm">
-    <!-- Maybe "detach" it from the card (no background + margin right) -->
+    <!-- TODO: "detach" it from the card (no background + margin right) -->
+    <!-- Make the default GameIcon a squircle -->
     <div
       class="flex w-32 min-w-fit flex-shrink-0 items-center justify-center bg-gray-100"
     >
-      <GameIcon class="h-14 w-14 text-gray-400" />
+      <div
+        v-if="game.iconUrl"
+        class="h-full w-full bg-contain bg-center bg-no-repeat"
+        :style="{
+          backgroundImage: `url(${game.iconUrl})`,
+        }"
+      />
+
+      <GameIcon v-else class="h-14 w-14 text-gray-400" />
     </div>
 
     <div class="flex flex-grow flex-col overflow-hidden p-4 text-gray-500">
@@ -59,7 +58,25 @@ const resolvedTags = computed(() => {
       <p
         class="mt-2 overflow-hidden overflow-ellipsis whitespace-nowrap text-sm text-gray-400"
       >
-        (2 lines)
+        Genre:
+
+        <GameTag v-for="tag in genreTags" :key="tag.value" :tag="tag" />
+      </p>
+
+      <p
+        class="mt-2 overflow-hidden overflow-ellipsis whitespace-nowrap text-sm text-gray-400"
+      >
+        Payment:
+
+        <GameTag v-for="tag in paymentTags" :key="tag.value" :tag="tag" />
+      </p>
+
+      <p
+        class="mt-2 overflow-hidden overflow-ellipsis whitespace-nowrap text-sm text-gray-400"
+      >
+        Features:
+
+        <GameTag v-for="tag in featureTags" :key="tag.value" :tag="tag" />
       </p>
     </div>
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AndroidIcon from "@/icons/AndroidIcon.vue";
 import IosIcon from "@/icons/IosIcon.vue";
-import type { Game } from "@/types";
+import { type Game, GameTagType } from "@/types";
 import GameCard from "@/components/GameCard.vue";
 import InputSelect from "@/components/InputSelect.vue";
 
@@ -28,13 +28,23 @@ const tabs = [
 const games: Game[] = [
   {
     issueId: 1,
+    storeId: "com.fake.aaa",
     name: "AAA",
+    iconUrl:
+      "https://play-lh.googleusercontent.com/C2GovacOYduxU7dbXRNdNi4NZhNNoox9ALojoTFHTm-D8BO1foe4VaOZFidr7ioO-DE=w240-h480-rw",
     likes: 0,
-    tags: [],
+    tags: [
+      {
+        type: GameTagType.Genre,
+        value: "Action RPG",
+      },
+    ],
   },
   {
     issueId: 2,
+    storeId: "com.fake.bbb",
     name: "BBB",
+    iconUrl: "",
     likes: 341,
     tags: [],
   },
