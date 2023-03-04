@@ -1,4 +1,4 @@
-import type { GameTag } from "./GameTag";
+import type { Tag } from "./Tag";
 
 export interface Game {
   issueId: number;
@@ -11,5 +11,5 @@ export interface Game {
 
   likes: number;
 
-  tags: Array<GameTag>;
+  tags: Tag[];
 }

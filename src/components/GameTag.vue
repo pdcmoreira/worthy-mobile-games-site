@@ -1,34 +1,30 @@
 <script setup lang="ts">
 import { computed, type PropType } from "vue";
-import type { GameTag } from "@/types";
-import { GameTagType } from "@/types";
+import type { Tag } from "@/types/Tag";
 
 const props = defineProps({
-  tag: { type: Object as PropType<GameTag>, required: true },
+  tag: {
+    type: Object as PropType<Tag>,
+    required: true,
+  },
 });
 
-const badgeClass = computed(
-  (): "badge-primary" | "badge-accent" | "badge-secondary" | null => {
-    switch (props.tag.type) {
-      case GameTagType.Genre:
-        return "badge-primary";
-      case GameTagType.Payment:
-        return "badge-accent";
-      case GameTagType.Feature:
-        return "badge-secondary";
-      default:
-        return null;
-    }
+const badgeClass = computed((): string | null => {
+  switch (props.tag.type) {
+    case "genre":
+      return "badge-primary";
+    case "payment":
+      return "badge-accent";
+    case "feature":
+      return "badge-secondary";
+    default:
+      return null;
   }
-);
+});
 </script>
 
 <template>
-  <div class="badge" :class="badgeClass">
-    {{ props.tag.value }}
+  <div class="badge rounded-md" :class="badgeClass">
+    {{ $t(`tags.${tag.value}`) }}
   </div>
-  <!-- <div class="badge badge-primary">primary</div>
-<div class="badge badge-secondary">secondary</div>
-<div class="badge badge-accent">accent</div>
-<div class="badge badge-ghost">ghost</div> -->
 </template>

@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import axios from "axios";
 import LayoutHeader from "./components/LayoutHeader.vue";
-import type { Game } from "@/types";
+import type { Game } from "@/types/Game";
 
 const atlasApp = import.meta.env.VITE_ATLAS_APP;
 

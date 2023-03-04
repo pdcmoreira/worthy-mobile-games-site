@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import AndroidIcon from "@/icons/AndroidIcon.vue";
 import IosIcon from "@/icons/IosIcon.vue";
-import { type Game, GameTagType } from "@/types";
+import type { Game } from "@/types/Game";
+import { tagFromString } from "@/types/Tag";
 import GameCard from "@/components/GameCard.vue";
 import InputSelect from "@/components/InputSelect.vue";
+import type { Platform } from "@/types/Platform";
+import type { PropType } from "vue";
 
 defineProps({
   platform: {
-    type: String,
+    type: String as PropType<Platform>,
     required: true,
   },
 });
@@ -25,7 +28,8 @@ const tabs = [
   },
 ];
 
-const games: Game[] = [
+// TODO: do the mapping right here
+const responseData = [
   {
     issueId: 1,
     storeId: "com.fake.aaa",
@@ -34,10 +38,11 @@ const games: Game[] = [
       "https://play-lh.googleusercontent.com/C2GovacOYduxU7dbXRNdNi4NZhNNoox9ALojoTFHTm-D8BO1foe4VaOZFidr7ioO-DE=w240-h480-rw",
     likes: 0,
     tags: [
-      {
-        type: GameTagType.Genre,
-        value: "Action RPG",
-      },
+      "genre: role-playing",
+      "genre: action",
+      "payment: premium",
+      "payment: in-game-dlc",
+      "feature: gamepad-support",
     ],
   },
   {
@@ -46,9 +51,15 @@ const games: Game[] = [
     name: "BBB",
     iconUrl: "",
     likes: 341,
-    tags: [],
+    tags: ["genre: role-playing", "genre: turn-based"],
   },
 ];
+
+const games: Game[] = responseData.map((item) => ({
+  ...item,
+
+  tags: item.tags.map((tag) => tagFromString(tag)),
+}));
 </script>
 
 <template>
@@ -73,6 +84,7 @@ const games: Game[] = [
       v-for="game in games"
       :key="game.issueId"
       :game="game"
+      :platform="platform"
       class="mb-4"
     />
   </div>

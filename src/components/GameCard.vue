@@ -1,91 +1,72 @@
 <script setup lang="ts">
-import { type Game, GameTagType } from "@/types";
 import { computed, type PropType } from "vue";
-import GameTag from "./GameTag.vue";
+import type { Platform } from "@/types/Platform";
+import type { Game } from "@/types/Game";
+import GameIcon from "@/components/GameIcon.vue";
+import GameTagBox from "@/components/GameTagBox.vue";
 import LikeIcon from "@/icons/LikeIcon.vue";
-import GameIcon from "@/icons/GameIcon.vue";
+import getStoreUrl from "@/utilities/getStoreUrl";
 
 const props = defineProps({
-  game: { type: Object as PropType<Game>, required: true },
+  platform: {
+    type: String as PropType<Platform>,
+    required: true,
+  },
+
+  game: {
+    type: Object as PropType<Game>,
+    required: true,
+  },
 });
 
-// TODO: do this when mapping API results to Game
-// const resolveTag = (tag: string): [string, string] | null => {
-//   const match = tag.match(/^(.+): (.+)$/);
+const storeUrl = computed(() =>
+  getStoreUrl(props.platform, props.game.storeId)
+);
 
-//   if (!match) {
-//     return null;
-//   }
-
-//   return [match[1], match[2]];
-// };
-
-const getTagsOfType = (type: GameTagType) =>
+const getTagsOfType = (type: string) =>
   props.game.tags.filter((tag) => tag.type === type);
 
-const genreTags = computed(() => getTagsOfType(GameTagType.Genre));
+const genreTags = computed(() => getTagsOfType("genre"));
 
-const paymentTags = computed(() => getTagsOfType(GameTagType.Payment));
+const paymentTags = computed(() => getTagsOfType("payment"));
 
-const featureTags = computed(() => getTagsOfType(GameTagType.Feature));
+const featureTags = computed(() => getTagsOfType("feature"));
 </script>
 
 <template>
-  <div class="relative flex h-32 justify-center rounded-sm border shadow-sm">
-    <!-- TODO: "detach" it from the card (no background + margin right) -->
-    <!-- Make the default GameIcon a squircle -->
+  <div class="relative flex justify-center">
     <div
-      class="flex w-32 min-w-fit flex-shrink-0 items-center justify-center bg-gray-100"
+      class="mr-4 flex w-32 min-w-fit flex-shrink-0 items-center justify-center"
     >
-      <div
-        v-if="game.iconUrl"
-        class="h-full w-full bg-contain bg-center bg-no-repeat"
-        :style="{
-          backgroundImage: `url(${game.iconUrl})`,
-        }"
-      />
-
-      <GameIcon v-else class="h-14 w-14 text-gray-400" />
+      <GameIcon :game="game" />
     </div>
 
-    <div class="flex flex-grow flex-col overflow-hidden p-4 text-gray-500">
-      <h3
-        class="w-full overflow-hidden overflow-ellipsis whitespace-nowrap text-lg font-bold"
-      >
-        {{ game.name }} (1 line)
-      </h3>
+    <a
+      :href="storeUrl"
+      target="_blank"
+      class="flex flex-grow rounded-lg border shadow-sm hover:shadow-md"
+    >
+      <div class="flex flex-grow flex-col overflow-hidden p-4 text-gray-500">
+        <h3
+          class="min-h-6 w-full overflow-hidden overflow-ellipsis whitespace-nowrap text-lg font-bold"
+        >
+          {{ game.name }}
+        </h3>
 
-      <p
-        class="mt-2 overflow-hidden overflow-ellipsis whitespace-nowrap text-sm text-gray-400"
-      >
-        Genre:
+        <GameTagBox type="genre" :tags="genreTags" class="mt-2" />
 
-        <GameTag v-for="tag in genreTags" :key="tag.value" :tag="tag" />
-      </p>
+        <GameTagBox type="payment" :tags="paymentTags" class="mt-2" />
 
-      <p
-        class="mt-2 overflow-hidden overflow-ellipsis whitespace-nowrap text-sm text-gray-400"
-      >
-        Payment:
+        <GameTagBox type="feature" :tags="featureTags" class="mt-2" />
+      </div>
 
-        <GameTag v-for="tag in paymentTags" :key="tag.value" :tag="tag" />
-      </p>
-
-      <p
-        class="mt-2 overflow-hidden overflow-ellipsis whitespace-nowrap text-sm text-gray-400"
-      >
-        Features:
-
-        <GameTag v-for="tag in featureTags" :key="tag.value" :tag="tag" />
-      </p>
-    </div>
-
-    <div class="self-start py-4 pr-4">
-      <span
-        class="flex rounded-full bg-emerald-100 px-3 py-1.5 text-xs font-medium text-emerald-800"
-      >
-        <LikeIcon class="mr-1" /> {{ game.likes }}
-      </span>
-    </div>
+      <div class="self-start py-4 pr-4">
+        <span
+          class="flex rounded-full bg-emerald-100 px-3 py-1.5 text-xs font-medium text-emerald-800"
+        >
+          <LikeIcon class="mr-1" /> {{ game.likes }}
+        </span>
+      </div>
+    </a>
   </div>
 </template>
